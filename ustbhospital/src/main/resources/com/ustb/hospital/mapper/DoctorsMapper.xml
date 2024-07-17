@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ustb.hospital.mapper.DoctorsMapper">
+    <resultMap id="doctorMap" type="com.ustb.hospital.entity.Doctors">
+        <id column="id" property="id"/>
+        <result column="job_number" property="jobNumber"/>
+        <result column="password" property="password"/>
+        <result column="name" property="name"/>
+        <result column="avatar" property="avatar"/>
+        <result column="phone" property="phone"/>
+        <result column="email" property="email"/>
+        <result column="introduction" property="introduction"/>
+        <result column="registration_fee" property="registrationFee"/>
+    </resultMap>
+
+    <resultMap id="doctMap" type="com.ustb.hospital.entity.Doctors">
+
+        <id column="doctor_id" property="doctorId"/>
+
+        <result column="job_number" property="jobNumber"/>
+
+        <result column="name" property="name"/>
+
+        <result column="avatar" property="avatar"/>
+
+        <result column="phone" property="phone"/>
+
+        <result column="registration_fee" property="registrationFee"/>
+
+        <result column="entry_date" property="entryDate"/>
+
+        <association property="departments" javaType="com.ustb.hospital.entity.Departments">
+            <result column="department_name" property="department_name"></result>
+        </association>
+
+        <association property="professionalTitles" javaType="com.ustb.hospital.entity.ProfessionalTitles">
+            <result column="title_name" property="titleName"></result>
+        </association>
+
+    </resultMap>
+    <select id="selectAll" resultMap="doctorMap">
+        select * from doctors
+    </select>
+    <select id="selectByDeptId" resultMap="doctorMap">
+        select * from doctors where department_id=#{deptId}
+    </select>
+
+    <select id="selectByMulti" resultMap="doctMap">
+        select
+            doctor_id,
+            job_number,
+            name,
+            avatar,
+            phone,
+            registration_fee,
+            entry_date,
+            department_name,
+            title_name
+        from
+            doctors doct,
+            departments dept,
+            professional_titles pt
+        where
+            doct.department_id=dept.department_id
+          and doct.professional_title_id = pt.id
+        <if test="jobNumber!=null and jobNumber!=''">
+            and doct.job_number=#{jobNumber}
+        </if>
+        <if test="name!=null and name!=''">
+            and doct.name=#{name}
+        </if>
+        <if test="deptId!=null and deptId!=''">
+            and doct.department_id=#{deptId}
+        </if>
+    </select>
+
+    <insert id="insert">
+        insert into doctors(name,avatar,phone,department_id,professional_title_id)
+        values (#{name}, #{avatar}, #{phone}, #{departmentId}, #{professionalTitleId})
+    </insert>
+
+    <delete id="deleteById">
+        delete from doctors where doctor_id=#{doctorId}
+    </delete>
+</mapper>
