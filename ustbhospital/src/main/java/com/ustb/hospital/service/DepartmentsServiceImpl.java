@@ -23,12 +23,7 @@ public class DepartmentsServiceImpl {
             //SqlSession sqlSession = MybatisUtils.getSqlSession();
             //DepartmentsMapper mapper = sqlSession.getMapper(DepartmentsMapper.class);
             Departments department = mapper.selectByName(name);
-            if(department == null){
-                mapper.updateById(id,name,desc);
-            }
-            else{
-                throw new Exception("科室名称已存在");
-            }
+            mapper.updateById(id,name,desc);
 
         }
         catch (Exception e) {
